@@ -16,7 +16,8 @@ def index():
 	X += "<a href=/about>羿汶的網頁</a><br>"
 	X += "<a href=/welcome?guest=Wanda>歡迎Wanda~ ~</a><br>"
 	X += "<a href=/account>使用表單方式傳值</a><br><br>"
-	X += "<a href=/wave>人選之人演員名單(按年齡由小到大)</a><br>"
+	X += "<a href=/wave>人選之人演員名單(按年齡由小到大)</a><br><br>"
+	X += "<a href=/books>全部圖書</a><br>"
 	return X
 
 @app.route("/mis")
@@ -57,6 +58,18 @@ def wave():
         Result += "演員：{}".format(doc.to_dict()) + "<br>"    
     return Result
 
+@app.route("/books")
+def books():
+    Result = ""
+    db = firestore.client()
+    collection_ref = db.collection("圖書精選")    
+    docs = collection_ref.order_by("anniversary").get()    
+    for doc in docs:
+    	bk = doc.to_dict()         
+        Result += "書名："+ bk["title"] + "<br>"
+        Result += "作者："+ bk["author"] + "<br>"
+        Result += str(bk["title"]) + "週年紀念版 "  + "<br><br>"
+    return Result
 
-#if __name__ == "__main__":
-	#app.run()
+if __name__ == "__main__":
+	app.run(debug=True)
