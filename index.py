@@ -18,6 +18,7 @@ def index():
 	X += "<a href=/account>使用表單方式傳值</a><br><br>"
 	X += "<a href=/wave>人選之人演員名單(按年齡由小到大)</a><br><br>"
 	X += "<a href=/books>全部圖書</a><br>"
+	X += "<a href=/search>根據書名關鍵字查詢圖書</a><br>"
 	return X
 
 @app.route("/mis")
@@ -60,16 +61,37 @@ def wave():
 
 @app.route("/books")
 def books():
-    Result = ""
-    db = firestore.client()
-    collection_ref = db.collection("圖書精選")    
-    docs = collection_ref.order_by("anniversary").get()    
-    for doc in docs:
-    	bk = doc.to_dict()         
-        Result += "書名："+ bk["title"] + "<br>"
-        Result += "作者："+ bk["author"] + "<br>"
-        Result += str(bk["title"]) + "週年紀念版 "  + "<br><br>"
-    return Result
+	Result = ""
+	db = firestore.client()
+	collection_ref = db.collection("圖書精選")
+	docs = collection_ref.order_by("anniversary").get()
+	for doc in docs:
+		bk = doc.to_dict()
+		Result += "書名：<a href=" + bk["url"] + ">" + bk["title"] + "</a><br>"
+		Result += "作者：" + bk["author"] + "<br>"
+		Result += str(bk["anniversary"]) + "週年紀念版 " + "<br>"
+		Result += "<img src = " + bk["cover"] + "></img><br><br>"
+	return Result
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+	if request.method == "POST":
+		keyword = request.form["keyword"]
+		Result = "您輸入的關鍵字是：" + keyword
+
+		db = firestore.client()
+		collection_ref = db.collection("圖書精選")
+		docs = collection_ref.order_by("anniversary").get()
+		for doc in docs:
+			bk = doc.to_dict()
+			if keyword in bk["title"]:
+				Result += "書名：<a href=" + bk["url"] + ">" + bk["title"] + "</a><br>"
+				Result += "作者：" + bk["author"] + "<br>"
+				Result += str(bk["anniversary"]) + "週年紀念版 " + "<br>"
+				Result += "<img src = " + bk["cover"] + "></img><br><br>"
+		return Result
+	else:
+		return render_template("searchbk.html")
 
 if __name__ == "__main__":
 	app.run(debug=True)
