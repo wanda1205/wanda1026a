@@ -113,9 +113,8 @@ def spider():
 		info += x.find("h4").text + "<br>"
 		info += x.find("p").text + "<br>"
 		info += x.find("a").get("href") + "<br>"
-		info += "https://www1.pu.edu.tw/~tcyang/" + x.find("img").get("src") + "<br><br>"
-		print()
-	return info
+		info += "<img src=https://www1.pu.edu.tw/~tcyang/" + x.find("img").get("src") + "width=200 height=300></img><br><br>"
+		return info
 
 
 if __name__ == "__main__":
