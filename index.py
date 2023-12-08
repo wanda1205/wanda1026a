@@ -254,7 +254,7 @@ def webhook():
     #info = "動作：" + action + "； 查詢內容：" + msg
     if (action == "rateChoice"):
 		rate =  req.get("queryResult").get("parameters").get("rate")
-		nfo = "您選擇的電影分級是：" + rate
+		info = "您選擇的電影分級是：" + rate
 
     return make_response(jsonify({"fulfillmentText": info}))
 
